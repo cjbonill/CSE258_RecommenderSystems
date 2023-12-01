@@ -52,6 +52,44 @@ def getProfilesAndBeerDicts(data):
 
     return profilesPerBeer, beersPerProfile, beerIdToBeerName
 
+def getMostAndLeastPopularBeers(data, beerIdToBeerName, atLeastXReviews):
+    # {'47986': [1.5], '48213': [3.0], '48215': [3.0], '47969': [3.0], '64883': [4.0], '52159': [
+    # Calculate average ratings for each beer
+    beer_ratings = defaultdict(list)
+
+    for d in data:
+        beer_ratings[d["beer/beerId"]].append(d["review/overall"])
+
+    elem_to_del = []
+    for d in beer_ratings:
+        if len(beer_ratings[d]) < atLeastXReviews:
+            elem_to_del.append(d)
+
+    for d in elem_to_del:
+        beer_ratings.pop(d)
+
+    print("[getMostAndLeastPopularBeers] Length of beer ratings dict:", len(beer_ratings))
+
+    beer_average_ratings = {
+        beer_id: sum(ratings) / len(ratings) for beer_id, ratings in beer_ratings.items()
+    }
+
+    # Find the most and least popular beers by average rating
+    most_popular_beer = max(beer_average_ratings, key=beer_average_ratings.get)
+    least_popular_beer = min(beer_average_ratings, key=beer_average_ratings.get)
+
+    most_popular_beer_str = beerIdToBeerName[most_popular_beer]
+    least_popular_beer_str = beerIdToBeerName[least_popular_beer]
+    print("The most popular beer is: '", most_popular_beer_str, "' with an average rating of", beer_average_ratings[most_popular_beer])
+    print(len(beer_ratings[most_popular_beer]), "people reviewed this beer")
+
+    print("")
+
+    print("The least popular beer is: '", least_popular_beer_str, "' with an average rating of", beer_average_ratings[least_popular_beer])
+    print(len(beer_ratings[least_popular_beer]), "people reviewed this beer")
+
+    # print(beer_ratings)
+
 # %%
 data = list(parseData("beer_50000.json"))
 
@@ -68,6 +106,14 @@ print(len(beer_overall_ratings))
 
 categories = beer_overall_ratings.keys()
 values = beer_overall_ratings.values()
+
+weighted_sum = 0
+total_count = 0
+for rating in beer_overall_ratings:
+    weighted_sum += rating * beer_overall_ratings[rating]
+    total_count += beer_overall_ratings[rating]
+
+print(weighted_sum/total_count)
 
 # Setting the style (optional, for aesthetics)
 sns.set_style('whitegrid')
@@ -152,8 +198,8 @@ sns.barplot(x=categories, y=values_set2, color='red', alpha=.7, label='Taste Rat
 # Adding legend, title, and labels
 plt.legend()  # Show legend based on the labels provided in the plots
 plt.title('Taste Rating v. Overall Rating')
-plt.xlabel('Ratings')
-plt.ylabel('Counts')
+plt.xlabel('Rating')
+plt.ylabel('Count')
 
 plt.tight_layout()
 plt.show()
@@ -247,6 +293,10 @@ profilesPerBeer, beersPerProfile, beerIdToBeerName = getProfilesAndBeerDicts(dat
 print("Amount of users:", len(beersPerProfile))
 print("Amount of beers:", len(profilesPerBeer))
 
+
+
+# %%
+getMostAndLeastPopularBeers(data, beerIdToBeerName, 10)
 
 
 
