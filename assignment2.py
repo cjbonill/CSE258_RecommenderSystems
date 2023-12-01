@@ -38,6 +38,19 @@ def getDictOfTimeCategoryAndCounts(data, time):
             d[entry] += 1
     return d
 
+def getProfilesAndBeerDicts(data):
+    profilesPerBeer = defaultdict(set)
+    beersPerProfile = defaultdict(set)
+    beerIdToBeerName = {}
+
+    for d in data:
+        profile,beerId = d['user/profileName'], d['beer/beerId']
+        beersPerProfile[profile].add(beerId)
+        profilesPerBeer[beerId].add(profile)
+        if beerId not in beerIdToBeerName:
+            beerIdToBeerName[beerId] = d['beer/name']
+
+    return profilesPerBeer, beersPerProfile, beerIdToBeerName
 
 # %%
 data = list(parseData("beer_50000.json"))
@@ -225,5 +238,15 @@ plt.ylabel('Count')
 plt.xticks(rotation=45)
 plt.tight_layout()  # Adjust layout to prevent cutting off labels
 plt.show()
+
+# %%
+# profilesPerBeer maps each beer ID to a set of user profiles, e.g. {beer1 -> {userA, userB, userC}}
+# beersPerProfile maps each user profile to a set of beer IDs, e.g. {userA -> {beer1, beer2, beer3}}
+# beerIdToBeerNmae maps the beer ID to the name of the beer
+profilesPerBeer, beersPerProfile, beerIdToBeerName = getProfilesAndBeerDicts(data)
+print("Amount of users:", len(beersPerProfile))
+print("Amount of beers:", len(profilesPerBeer))
+
+
 
 
