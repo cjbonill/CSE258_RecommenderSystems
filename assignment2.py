@@ -11,6 +11,8 @@ import math
 import seaborn as sns
 import matplotlib.pyplot as plt
 import calendar
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 
 # %%
@@ -298,5 +300,43 @@ print("Amount of beers:", len(profilesPerBeer))
 # %%
 getMostAndLeastPopularBeers(data, beerIdToBeerName, 10)
 
+
+# %% [markdown]
+# # Basic Sentiment Analysis
+
+# %%
+nltk.download('vader_lexicon')
+sia = SentimentIntensityAnalyzer()
+
+# if sentiment_score > 0:
+#     sentiment = "positive"
+# elif sentiment_score < 0:
+#     sentiment = "negative"
+# else:
+#     sentiment = "neutral"
+
+review_text = []
+overall_reviews = []
+
+for d in data:
+    review_text.append(d['review/text'])
+    overall_reviews.append(d['review/overall'])
+
+
+# %%
+accuracy = 0
+
+for i in range(len(data)):
+    review = review_text[i]
+    overall_rating = overall_reviews[i]
+    sentiment_score = sia.polarity_scores(review)['compound']
+
+    # anything 3 or above is seen as a positive recommendation
+    if sentiment_score >= 0 and overall_rating >= 3:
+        accuracy += 1
+    elif sentiment_score < 0 and overall_rating < 3:
+        accuracy += 1
+
+print(accuracy/len(data))
 
 
