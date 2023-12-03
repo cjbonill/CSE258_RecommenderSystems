@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+cd ../data;
+
+# retrieve first 50K rows of beeradvocate dataset
+if ! test -f beer_50000.json; then
+    curl https://cseweb.ucsd.edu/classes/fa23/cse258-a/data/beer_50000.json --output beer_50000.json;
+fi;
+
+# retrieve full beeradvocate dataset
+if ! test -f beeradvocate.json.gz; then
+    curl https://datarepo.eng.ucsd.edu/mcauley_group/data/beer/beeradvocate.json.gz --output beeradvocate.json.gz;
+fi;
+
+cd ../scripts;
