@@ -5,3 +5,4 @@
 2. Activate the virtual environment by running `./venv/Scripts/activate`
 3. Install required dependencies by running `pip install -r requirements.txt`
 4. To update list of dependencies after installing new packages, run `pip freeze > requirements.txt`
+5. Download the data by running `./download-data` from the 'scripts/' directory.
