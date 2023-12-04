@@ -7,9 +7,10 @@ if ! test -f beer_50000.json; then
     curl https://cseweb.ucsd.edu/classes/fa23/cse258-a/data/beer_50000.json --output beer_50000.json;
 fi;
 
-# retrieve full beeradvocate dataset
+# retrieve (and unzip?) full beeradvocate dataset
 if ! test -f beeradvocate.json.gz; then
     curl https://datarepo.eng.ucsd.edu/mcauley_group/data/beer/beeradvocate.json.gz --output beeradvocate.json.gz;
+    # gzip -d beeradvocate.json.gz;
 fi;
 
 cd ../scripts;

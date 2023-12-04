@@ -162,4 +162,4 @@ cython_debug/
 .vscode/*
 
 # Large data files
-data/beeradvocate.json.gz
+data/beeradvocate.*
